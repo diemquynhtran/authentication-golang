@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"jwt-gin/entity"
 	"log"
 
@@ -39,8 +40,11 @@ func (db *userConnection) UpdateUser(user entity.User) entity.User {
 	} else {
 		var tempUser entity.User
 		db.connection.Find(&tempUser, user.ID) //select from users where id =user.id
+		fmt.Println(tempUser)
 		user.Password = tempUser.Password
+		//user.Email = tempUser.Email
 	}
+	fmt.Println(user.Email)
 	db.connection.Save(&user)
 	return user
 }

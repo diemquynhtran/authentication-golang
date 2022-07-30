@@ -40,12 +40,18 @@ func (c* authController) Login(ctx *gin.Context) {
 	}
 	authResult := c.authService.VerifyCredential(loginDTO.Email, loginDTO.Password)
 	if v, ok := authResult.(entity.User); ok {
+		log.Println(authResult.(entity.User))
+		log.Println(v)
+		log.Println(ok)
 		generatedToken := c.jwtService.GenerateToken(strconv.FormatUint(v.ID, 10))
 		v.Token = generatedToken
 		response := helper.BuildResponse(true, "Login OK", v)
 		ctx.JSON(http.StatusOK, response)
 		return
 	}
+	//log.Println(authResult)
+	response := helper.BuildErrorResponse("Please check again your credential", "Invalid credential", helper.EmptyObj{})
+	ctx.AbortWithStatusJSON(http.StatusUnauthorized, response)
 }
 
 func (c* authController) Register(ctx *gin.Context) {
